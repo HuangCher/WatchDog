@@ -1,12 +1,15 @@
 #ifndef PINS_H
 #define PINS_H
 
-#define PIR_PIN 13
-#define SERVO_PIN 12
-#define BUZZER_PIN 27
-#define LED_R 14
-#define LED_G 26
-#define LED_B 25
-#define BUTTON_PIN 33
+#define PIR_PIN 17
+#define SERVO_PIN 16
+#define BUZZER_PIN 15
+#define LED_R_LEFT_PIN 5
+#define LED_G_LEFT_PIN 18
+#define LED_B_LEFT_PIN 19
+#define LED_R_RIGHT_PIN 21
+#define LED_G_RIGHT_PIN 3
+#define LED_B_RIGHT_PIN 1
+#define BUTTON_PIN 2
 
 #endif // PINS_H
