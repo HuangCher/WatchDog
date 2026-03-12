@@ -1,7 +1,4 @@
-// johanna
-
-#include "pins.h"
-#include <Arduino.h>
+#include "motion.h" // new addtion so that we can use the motionDetected flag in fsm.cpp when we integrate the modules together
 // Motion Detection Module
 // Owner: Johanna
 //
@@ -11,18 +8,14 @@
 // - Calculate inactivity duration
 // - Provide motion information to system logic
 
-
-
-//Code from the Arduino IDE
-
-#define PIR_PIN 17
 //#define ledPin #
 //#define buzzer 15
 
 //setting up the PIR sensor and the LED and buzzer pins
 void setup(){
 //Serial.begin(9600);
-pinMode(17, INPUT);
+pinMode(PIR_PIN, INPUT);
+motionDetected = false;
 //pinMode (ledPin, OUTPUT);     LED Pin
 //pinMode (15, OUTPUT);         Buzzer Pin
 }
@@ -30,18 +23,19 @@ pinMode(17, INPUT);
 
 //main loop to read the PIR sensor and control the LED and buzzer
 void loop(){
-bool pirPin = digitalRead(PIR_PIN); 
+    motionDetected = digitalRead(PIR_PIN); 
 
-if (pirPin==true){
-//digitalWrite(ledPin, HIGH);               LED turns on when motion is detected
-//Serial.println("MOTION DETECTED!!");      output to serial monitor
+    // these all can be in the main fsm.cpp file
+    if (motionDetected==true){
+    //digitalWrite(ledPin, HIGH);               LED turns on when motion is detected
+    //Serial.println("MOTION DETECTED!!");      output to serial monitor
 
-} 
-else {
-//digitalWrite (ledPin, LOW);       LED turns off when no motion is detected
+    } 
+    else {
+    //digitalWrite (ledPin, LOW);       LED turns off when no motion is detected
 
-//tone (15, 1000);                  Buzzer makes noise when no motion is detected
-//delay(1000);
-//noTone(15);
-}
+    //tone (15, 1000);                  Buzzer makes noise when no motion is detected
+    //delay(1000);
+    //noTone(15);
+    }
 }
