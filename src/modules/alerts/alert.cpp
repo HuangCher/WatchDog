@@ -19,6 +19,7 @@ void setup_alert(){
     pinMode(LED_R_LEFT_PIN, OUTPUT);
     pinMode(LED_G_LEFT_PIN, OUTPUT);
     pinMode(LED_B_LEFT_PIN, OUTPUT);
+
     pinMode(LED_R_RIGHT_PIN, OUTPUT);
     pinMode(LED_G_RIGHT_PIN, OUTPUT);
     pinMode(LED_B_RIGHT_PIN, OUTPUT);
@@ -31,7 +32,6 @@ void studyMode(){
     digitalWrite(LED_G_LEFT_PIN, HIGH);
     digitalWrite(LED_B_LEFT_PIN, LOW);
 
-    // Right LED
     digitalWrite(LED_R_RIGHT_PIN, LOW);
     digitalWrite(LED_G_RIGHT_PIN, HIGH);
     digitalWrite(LED_B_RIGHT_PIN, LOW);
@@ -44,7 +44,6 @@ void warningMode(){
     digitalWrite(LED_G_LEFT_PIN, LOW);
     digitalWrite(LED_B_LEFT_PIN, LOW);
 
-    // Right LED
     digitalWrite(LED_R_RIGHT_PIN, HIGH);
     digitalWrite(LED_G_RIGHT_PIN, LOW);
     digitalWrite(LED_B_RIGHT_PIN, LOW);
@@ -54,14 +53,12 @@ void warningMode(){
     tone(BUZZER_PIN, 1000);
 }
 
-// Blue
 void breakMode(){
     // Left LED
     digitalWrite(LED_R_LEFT_PIN, LOW);
     digitalWrite(LED_G_LEFT_PIN, LOW);
     digitalWrite(LED_B_LEFT_PIN, HIGH);
 
-    // Right LED
     digitalWrite(LED_R_RIGHT_PIN, LOW);
     digitalWrite(LED_G_RIGHT_PIN, LOW);
     digitalWrite(LED_B_RIGHT_PIN, HIGH);
@@ -70,11 +67,19 @@ void breakMode(){
 void loop_alert(){
     // Example usage:
     studyMode();
-    delay(5000); // Stay in study mode for 5 seconds
+    delay(5000);
 
     warningMode();
     delay(5000); // Stay in warning mode for 5 seconds
 
     breakMode();
-    delay(5000); // Stay in break mode for 5 seconds
+    delay(5000);
+}
+
+void setup() {
+    setup_alert();
+}
+
+void loop() {
+    loop_alert();
 }
