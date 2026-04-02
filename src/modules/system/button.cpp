@@ -14,7 +14,6 @@
 
 #include <Arduino.h>
 
-#define BUTTON_PIN 2          // Change only if your button is on a different pin
 
 // Global variables for button
 unsigned long lastButtonPressTime = 0;
