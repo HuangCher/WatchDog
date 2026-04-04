@@ -1,14 +1,11 @@
 // veronica
 #pragma once
 #include <Servo.h>
-// #include <iostream>
-#include "pins.h" //VSCODE only
+#include "pins.h"
 #include <Arduino.h>
 #include <ESP32Servo.h>
 #include "timer.h"
 #define SERVO_PIN 16
-
-// using namespace std;
 
 // Responsibilities:j
 // - Initialize servo motor
@@ -37,40 +34,26 @@ void init_servo(){
 //Implementation
 void servo_idle(){ //Neutral position
     angle = 0;
-    myservo.write(0);
+    myservo.write(angle);
     paused = true; // ?
     //Stays at 0 degrees unless button is pressed
 }
 
 void servo_progress(float progress){   
-  paused = false; //Motor should not be paused
-  // myservo.write(0);
-  float current_angle = 0 * 180; //Start at 0
-  if (current_angle < 0) current_angle = 0;
-  if (current_angle > 180) current_angle = 180;
+    if(paused) return;
 
-  angle = (int)current_angle;
-  myservo.write(angle);
+    if(progress < 0) progress = 0;
+    if(progress > 1) progress = 1;
 
-  // if (paused == false){
-  //   while (current_angle < 180){
-  //     current_angle = progress * 180;
-  //     angle = current_angle;
-  //     myservo.write(current_angle);
-  //   }
-  // }
-  // angle = 180;
-
-  //Make flag to pause (on/off) and put in header file
-  //float progress * 180 = study angle 
-  //progress = elapsed time / maximum time (aka STUDY_TIME)
-  // use functions to take in Johanna's progress variable 
+    float current_angle = progress * 180.0;
+    myservo.write((int)current_angle);
+    angle = (int)current_angle;
 }
 
 void servo_warning() {
     angle = 180;
     myservo.write(angle);
-    paused = false;
+    paused = true;
 }
 
 void servo_break() {

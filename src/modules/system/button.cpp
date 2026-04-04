@@ -24,8 +24,6 @@ const unsigned long DEBOUNCE_DELAY = 250;   // milliseconds
 // Button Functions
 void buttonSetup() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);   // Button connected between pin and GND
-  // systemOn = false;
-  // Serial.println("Button initialized - Press to START the system");
 }
 
 // Returns true only once when the button is newly pressed (debounced)
@@ -34,9 +32,6 @@ bool buttonWasPressed() {
     if (millis() - lastButtonPressTime > DEBOUNCE_DELAY) { // Debounce check
       lastButtonPressTime = millis();
       
-      // Toggle system state every time button is pressed
-      // systemOn = !systemOn;
-      
       return true;   // Button was just pressed
     }
   }
@@ -44,17 +39,6 @@ bool buttonWasPressed() {
   // return digitalRead(BUTTON_PIN) == LOW; 
 }
 
-// // Returns current system state
-// bool isSystemOn() {
-//   return systemOn;
-// }
-
-// // Force the system state (optional, useful for resets)
-// void setSystemState(bool on) {
-//   systemOn = on;
-// }
-
-// Optional: Check if button is currently held down
 bool isButtonHeld() {
   return digitalRead(BUTTON_PIN) == LOW;
 }

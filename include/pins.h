@@ -8,8 +8,8 @@
 #define LED_G_LEFT_PIN 18
 #define LED_B_LEFT_PIN 19
 #define LED_R_RIGHT_PIN 21
-#define LED_G_RIGHT_PIN 3
-#define LED_B_RIGHT_PIN 1
-#define BUTTON_PIN 2
+#define LED_G_RIGHT_PIN 22
+#define LED_B_RIGHT_PIN 23
+#define BUTTON_PIN 4
 
 #endif // PINS_H

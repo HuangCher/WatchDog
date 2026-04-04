@@ -1,4 +1,3 @@
-// dw abt this file yet lol
 #include <Arduino.h>
 #include "fsm.h"
 #include "button.h"
