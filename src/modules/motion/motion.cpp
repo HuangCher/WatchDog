@@ -12,32 +12,42 @@
 //#define buzzer 15
 
 //setting up the PIR sensor and the LED and buzzer pins
-void setup(){
-//Serial.begin(9600);
-pinMode(PIR_PIN, INPUT);
-motionDetected = false;
-//pinMode (ledPin, OUTPUT);     LED Pin
-//pinMode (15, OUTPUT);         Buzzer Pin
-}
+// void setup(){
+// //Serial.begin(9600);
+// pinMode(PIR_PIN, INPUT);
+// motionDetected = false;
+// //pinMode (ledPin, OUTPUT);     LED Pin
+// //pinMode (15, OUTPUT);         Buzzer Pin
+// }
 
 
 //main loop to read the PIR sensor and control the LED and buzzer
-void loop(){
-    motionDetected = digitalRead(PIR_PIN); 
+// void loop(){
+//     motionDetected = digitalRead(PIR_PIN); 
 
-    // these all can be in the main fsm.cpp file
-    if (motionDetected==true){
-    //digitalWrite(ledPin, HIGH);               LED turns on when motion is detected
-    //Serial.println("MOTION DETECTED!!");      output to serial monitor
+//     // these all can be in the main fsm.cpp file
+//     if (motionDetected==true){
+//     //digitalWrite(ledPin, HIGH);               LED turns on when motion is detected
+//     //Serial.println("MOTION DETECTED!!");      output to serial monitor
 
-    } 
-    else {
-    //digitalWrite (ledPin, LOW);       LED turns off when no motion is detected
+//     } 
+//     else {
+//     //digitalWrite (ledPin, LOW);       LED turns off when no motion is detected
 
-    //tone (15, 1000);                  Buzzer makes noise when no motion is detected
-    //delay(1000);
-    //noTone(15);
-    }
+//     //tone (15, 1000);                  Buzzer makes noise when no motion is detected
+//     //delay(1000);
+//     //noTone(15);
+//     }
+// }
+
+//GONNA UPDATE THIS CODE
+
+void motionSetup()
+{
+    pinMode(PIR_PIN, INPUT);
 }
 
-//GONNA UPDATE THIS CODE 
+bool motionIsDetected()
+{
+    return digitalRead(PIR_PIN) == HIGH;
+}

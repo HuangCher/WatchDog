@@ -58,21 +58,35 @@ void breakMode(){
     digitalWrite(LED_B_RIGHT_PIN, HIGH);
 }
 
-void loop_alert(){
-    studyMode();
-    delay(5000);
+void idleMode() {
+    noTone(BUZZER_PIN);
 
-    warningMode();
-    delay(5000);
+    // Turn OFF left RGB LED
+    digitalWrite(LED_R_LEFT_PIN, LOW);
+    digitalWrite(LED_G_LEFT_PIN, LOW);
+    digitalWrite(LED_B_LEFT_PIN, LOW);
 
-    breakMode();
-    delay(5000);
+    // Turn OFF right RGB LED
+    digitalWrite(LED_R_RIGHT_PIN, LOW);
+    digitalWrite(LED_G_RIGHT_PIN, LOW);
+    digitalWrite(LED_B_RIGHT_PIN, LOW);
 }
 
-void setup() {
-    setup_alert();
-}
+// void loop_alert(){
+//     studyMode();
+//     delay(5000);
 
-void loop() {
-    loop_alert();
-}
+//     warningMode();
+//     delay(5000);
+
+//     breakMode();
+//     delay(5000);
+// }
+
+// void setup() {
+//     setup_alert();
+// }
+
+// void loop() {
+//     loop_alert();
+// }

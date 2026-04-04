@@ -5,30 +5,30 @@
 
 // hardware interface
 // fake hardware for testing but will be swapped with real hardware later
-class Hardware {
-    public: 
-        // inputs
-        virtual bool readButton() = 0;
-        virtual bool readMotion() = 0;
+// class Hardware {
+//     public: 
+//         // inputs
+//         virtual bool readButton() = 0;
+//         virtual bool readMotion() = 0;
 
-        // outputs
-        virtual void setIdleLights() = 0;
-        virtual void setWarningLights() = 0;
-        virtual void setBreakLights() = 0;
-        virtual void turnLightsOff() = 0;
+//         // outputs
+//         virtual void setIdleLights() = 0;
+//         virtual void setWarningLights() = 0;
+//         virtual void setBreakLights() = 0;
+//         virtual void turnLightsOff() = 0;
 
-        virtual void buzzerOn() = 0;
-        virtual void buzzerOff() = 0;
+//         virtual void buzzerOn() = 0;
+//         virtual void buzzerOff() = 0;
 
-        virtual void servoStudy() = 0;
-        virtual void servoWarning() = 0;
-        virtual void servoBreak() = 0;
-        virtual void servoIdle() = 0;
+//         virtual void servoStudy() = 0;
+//         virtual void servoWarning() = 0;
+//         virtual void servoBreak() = 0;
+//         virtual void servoIdle() = 0;
 
-        // debug printing
-        virtual void logMessage(const char* msg) = 0;
+//         // debug printing
+//         virtual void logMessage(const char* msg) = 0;
 
-};
+// };
 
 class FSM; 
 
@@ -50,46 +50,43 @@ class State {
 class FSM {
     private:
         State* currentState;
-        Hardware* hardware;
 
         // timers
-        unsigned long lastMotionTime;
-        unsigned long studyStartTime;
-        unsigned long breakStartTime;
+        // unsigned long lastMotionTime;
+        // unsigned long studyStartTime;
+        // unsigned long breakStartTime;
 
         // used to detect button press event
         bool lastButtonState;
 
         // timing values (can tweak later)
-        unsigned long inactivityLimit;
-        unsigned long studyLength;
-        unsigned long breakLength;
+        // unsigned long inactivityLimit;
+        // unsigned long studyLength;
+        // unsigned long breakLength;
     public:
-        FSM(Hardware* hardware);
+        FSM();
         
         void begin();
         void update();
         void setState(State* newState);
 
-        Hardware* getHardware();
-
         // timer helpers
-        void resetMotionTimer();
-        void startStudyTimer();
-        void startBreakTimer();
+        // void resetMotionTimer();
+        // void startStudyTimer();
+        // void startBreakTimer();
 
-        unsigned long getInactiveTime();
-        unsigned long getStudyTime();
-        unsigned long getBreakTime();
+        // unsigned long getInactiveTime();
+        // unsigned long getStudyTime();
+        // unsigned long getBreakTime();
 
         // input checks
         bool buttonPressed();
         bool motionDetected();
 
         // GETTERS
-        unsigned long getInactivityLimit();
-        unsigned long getStudyLength();
-        unsigned long getBreakLength();
+        // unsigned long getInactivityLimit();
+        // unsigned long getStudyLength();
+        // unsigned long getBreakLength();
 
         const char* getStateName();
 };
@@ -148,4 +145,4 @@ class BreakState : public State {
         BreakState() {}
 };
 
-#endif FSM_H
+#endif

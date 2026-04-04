@@ -15,19 +15,17 @@
 #include <Arduino.h>
 
 
-// Global variables for button
+// // Global variables for button
 unsigned long lastButtonPressTime = 0;
 const unsigned long DEBOUNCE_DELAY = 250;   // milliseconds
-bool systemOn = false;                      // System starts OFF
+// bool systemOn = false;                      // System starts OFF
 
 
 // Button Functions
-
-
 void buttonSetup() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);   // Button connected between pin and GND
-  systemOn = false;
-  Serial.println("Button initialized - Press to START the system");
+  // systemOn = false;
+  // Serial.println("Button initialized - Press to START the system");
 }
 
 // Returns true only once when the button is newly pressed (debounced)
@@ -37,23 +35,24 @@ bool buttonWasPressed() {
       lastButtonPressTime = millis();
       
       // Toggle system state every time button is pressed
-      systemOn = !systemOn;
+      // systemOn = !systemOn;
       
       return true;   // Button was just pressed
     }
   }
   return false;
+  // return digitalRead(BUTTON_PIN) == LOW; 
 }
 
-// Returns current system state
-bool isSystemOn() {
-  return systemOn;
-}
+// // Returns current system state
+// bool isSystemOn() {
+//   return systemOn;
+// }
 
-// Force the system state (optional, useful for resets)
-void setSystemState(bool on) {
-  systemOn = on;
-}
+// // Force the system state (optional, useful for resets)
+// void setSystemState(bool on) {
+//   systemOn = on;
+// }
 
 // Optional: Check if button is currently held down
 bool isButtonHeld() {

@@ -1,13 +1,11 @@
-// naydelin
-
-// use fake functions to test the FSM logic without 
-// needing the actual hardware modules
-
 #include "pins.h"
 #include <Arduino.h>
-#include "motion.h"
 #include "fsm.h"
-#define MINUTE 60000UL // one min in millisecond
+#include "button.h"
+#include "timer.h"
+#include "motion.h"
+#include "alert.h"
+#include "servo.h"
 
 // Responsibilities:
 // - Manage robot states
@@ -19,33 +17,38 @@
 // Warning
 // Break
 
-FSM::FSM(Hardware *hw)
+// add a loop to constantly check for update
+
+FSM::FSM()
 {
-    hardware = hw;
     currentState = NULL;
 
     // intialize timers
-    lastMotionTime = 0;
-    studyStartTime = 0;
-    breakStartTime = 0;
+    // lastMotionTime = 0;
+    // studyStartTime = 0;
+    // breakStartTime = 0;
 
     lastButtonState = false;
 
     // timing settings (change for testing if needed)
-    inactivityLimit = 10000; // 10 seconds for testing
-    studyLength = 25 * MINUTE; 
-    breakLength = 5 * MINUTE;
+    // inactivityLimit = 10000; // 10 seconds for testing
+    // studyLength = 25 * MINUTE; 
+    // breakLength = 5 * MINUTE;
 }
 
 void FSM::begin()
 {
     // start timers at beginning 
-    lastMotionTime = millis();
-    studyStartTime = millis();
-    breakStartTime = millis();
+    // lastMotionTime = millis();
+    // studyStartTime = millis();
+    // breakStartTime = millis();
 
     // save intial button state
-    lastButtonState = hardware->readButton();
+    // lastButtonState = buttonIsPressed();
+
+    stopStudyTimer();
+    stopBreakTimer();
+    stopInactivityTimer();
 
     // start in idle
     currentState = IdleState::getInstance();
@@ -75,79 +78,89 @@ void FSM::setState(State *newState)
     }
 }
 
-Hardware* FSM::getHardware() {
-    return hardware;
-}
+// void FSM::resetMotionTimer()
+// {
+//     lastMotionTime = millis();
+// }
 
-void FSM::resetMotionTimer()
-{
-    lastMotionTime = millis();
-}
+// void FSM::startStudyTimer()
+// {
+//     studyStartTime = millis();
+// }
 
-void FSM::startStudyTimer()
-{
-    studyStartTime = millis();
-}
-
-void FSM::startBreakTimer()
-{
-    breakStartTime = millis();
-}
+// void FSM::startBreakTimer()
+// {
+//     breakStartTime = millis();
+// }
 
 // GETTER
-unsigned long FSM::getInactiveTime()
-{
-    return millis() - lastMotionTime;
-}
+// unsigned long FSM::getInactiveTime()
+// {
+//     return millis() - lastMotionTime;
+// }
 
 // GETTER
-unsigned long FSM::getStudyTime()
-{
-    return millis() - studyStartTime;
-}
+// unsigned long FSM::getStudyTime()
+// {
+//     return millis() - studyStartTime;
+// }
 
 // GETTER
-unsigned long FSM::getBreakTime()
-{
-    return millis() - breakStartTime;
-}
+// unsigned long FSM::getBreakTime()
+// {
+//     return millis() - breakStartTime;
+// }
 
-bool FSM::buttonPressed()
-{
-    bool currentButtonState = hardware->readButton();
+// debounce - otherwise may see multiple fast presses 
+// bool FSM::buttonPressed()
+// {
+//     return buttonWasPressed();
+//     // static unsigned long lastDebounceTime = 0;
+//     // const unsigned long debounceDelay = 50;
 
-    // only trigger once when button is first pressed (not held)
-    bool pressedEvent = false;
-    if (lastButtonState == false && currentButtonState == true) {
-        pressedEvent = true;
-    }
+//     // bool currentButtonState = buttonIsPressed();
 
-    lastButtonState = currentButtonState;
-    return pressedEvent;
-}
+//     // // only trigger once when button is first pressed (not held)
+//     // bool pressedEvent = false;
+//     // if (currentButtonState != lastButtonState) {
+//     //     if (millis() - lastDebounceTime > debounceDelay) {
+//     //         lastDebounceTime = millis();
+//     //     }
 
-bool FSM::motionDetected()
-{
-    return hardware->readMotion();
-}
+//     //     // trigger only when button changes from not pressed to pressed 
+//     //     if (lastButtonState == false && currentButtonState == true) {
+//     //         lastButtonState = currentButtonState;
+//     //     }
+        
+//     //     pressedEvent = true;
+//     // }
+
+//     // lastButtonState = currentButtonState;
+//     // return pressedEvent;
+// }
+
+// bool FSM::motionDetected()
+// {
+//     return motionIsDetected();
+// }
 
 // GETTER 
-unsigned long FSM::getInactivityLimit()
-{
-    return inactivityLimit;
-}
+// unsigned long FSM::getInactivityLimit()
+// {
+//     return inactivityLimit;
+// }
 
 // GETTER
-unsigned long FSM::getStudyLength()
-{
-    return studyLength;
-}
+// unsigned long FSM::getStudyLength()
+// {
+//     return studyLength;
+// }
 
 // GETTER
-unsigned long FSM::getBreakLength()
-{
-    return breakLength;
-}
+// unsigned long FSM::getBreakLength()
+// {
+//     return breakLength;
+// }
 
 // GETTER
 const char *FSM::getStateName()
@@ -170,27 +183,28 @@ IdleState *IdleState::getInstance()
 void IdleState::enter(FSM *fsm)
 {
     // robot is "off"
-    Hardware* hw = fsm->getHardware();
+    Serial.println("entering idle state");
+    idleMode(); // idle alert (buzzer + lights)
+    servo_idle();
 
-    hw->logMessage("entering idle state");
-    hw->turnLightsOff();
-    hw->buzzerOff();
-    hw->servoIdle();
+    stopStudyTimer();
+    stopBreakTimer();
+    stopInactivityTimer();
 }
 
 void IdleState::update(FSM *fsm)
 {
     // button pressed starts study mode
-    if (fsm->buttonPressed()) {
-        fsm->startStudyTimer();
-        fsm->resetMotionTimer();
+    if (buttonWasPressed()) {
+        startStudyTimer();
+        startInactivityTimer();
         fsm->setState(StudyState::getInstance());
     }
 }
 
 void IdleState::exit(FSM *fsm)
 {
-    fsm->getHardware()->logMessage("exiting idle state");
+    Serial.println("exiting idle state");
 }
 
 const char *IdleState::getName()
@@ -209,38 +223,40 @@ StudyState *StudyState::getInstance()
 void StudyState::enter(FSM *fsm)
 {
     // normal monitoring state
-    Hardware* hw = fsm->getHardware();
+    // Hardware* hw = fsm->getHardware();
 
-    hw->logMessage("entering study state");
-    hw->turnLightsOff();
-    hw->buzzerOff();
-    hw->servoStudy();
+    Serial.println("entering study state");
+    studyMode(); // study alert (buzzer + lights)
+    // hw->servoStudy(); SERVO GOES HERE
 
     // reset inactivity timer when entering study
-    fsm->resetMotionTimer();
+    // fsm->resetMotionTimer();
 }
 
 void StudyState::update(FSM *fsm)
 {
     // button pressed again -> system off and goes back to idle
-    if (fsm->buttonPressed()) {
+    if (buttonWasPressed()) {
         fsm->setState(IdleState::getInstance());
         return;
     }
 
     // if motion is detected, reset inactivity timer bc user is active
-    if (fsm->motionDetected()) {
-        fsm->resetMotionTimer();
+    if (motionIsDetected()) {
+        startInactivityTimer();
     }
 
+    float progress = getTimerProgress(25UL * 60 * 1000);
+    servo_progress(progress);
+
     // if inactive too long, go to warning
-    if (fsm->getInactiveTime() >= fsm->getInactivityLimit()) {
+    if (isInactivityTimerFinished()) {
         fsm->setState(WarningState::getInstance());
         return;
     }
 
     // if 25 min is over, go to break
-    if (fsm->getStudyTime() >= fsm->getStudyLength()) {
+    if (isStudyTimerFinished()) {
         fsm->setState(BreakState::getInstance());
         return;
     }
@@ -248,7 +264,7 @@ void StudyState::update(FSM *fsm)
 
 void StudyState::exit(FSM *fsm)
 {
-    fsm->getHardware()->logMessage("exiting study state");
+    Serial.println("exiting study state");
 }
 
 const char *StudyState::getName()
@@ -267,38 +283,41 @@ WarningState *WarningState::getInstance()
 void WarningState::enter(FSM *fsm)
 {
     // alert user bc no motion detected
-    Hardware* hw = fsm->getHardware();
+    // Hardware* hw = fsm->getHardware();
 
-    hw->logMessage("entering warning state");
-    hw->setWarningLights();
-    hw->buzzerOn();
-    hw->servoWarning();
+    Serial.println("entering warning state");
+    warningMode(); // warning alert (buzzer + lights)
+    servo_warning();
+
+    pauseStudyTimer();
+    pauseInactivityTimer();
 }
 
 void WarningState::update(FSM *fsm)
 {
     // button pressed -> go to idle state
-    if (fsm->buttonPressed()) {
+    if (buttonWasPressed()) {
         fsm->setState(IdleState::getInstance());
         return;
     }
 
     // motion means user came back, so go back to study
-    if (fsm->motionDetected()) {
-        fsm->resetMotionTimer();
+    if (motionIsDetected()) {
+        resumeStudyTimer();
+        startInactivityTimer();
         fsm->setState(StudyState::getInstance());
         return;
     }
 }
 
-void WarningState::exit(FSM *fsm)
-{
-    Hardware* hw = fsm->getHardware();
+// void WarningState::exit(FSM *fsm)
+// {
+//     // Hardware* hw = fsm->getHardware();
 
-    hw->logMessage("exiting warning state");
-    hw->buzzerOff();
-    hw->turnLightsOff();
-}
+//     Serial.println("exiting warning state");
+//     hw->buzzerOff();
+//     hw->turnLightsOff();
+// }
 
 // GETTER
 const char *WarningState::getName()
@@ -316,40 +335,41 @@ BreakState *BreakState::getInstance()
 
 void BreakState::enter(FSM *fsm)
 {
-    Hardware* hw = fsm->getHardware();
+    // Hardware* hw = fsm->getHardware();
 
-    hw->logMessage("entering break state");
-    fsm->startBreakTimer();
-
-    hw->setBreakLights();
-    hw->buzzerOff();
-    hw->servoBreak();
+    Serial.println("entering break state");
+    breakMode(); // break alert (buzzer + lights)
+    servo_break();
+    
+    startBreakTimer();
+    stopInactivityTimer();
 }
 
 void BreakState::update(FSM *fsm)
 {
     // button pressed -> go to idle state
-    if (fsm->buttonPressed()) {
+    if (buttonWasPressed()) {
         fsm->setState(IdleState::getInstance());
         return;
     }
 
     // after break time is over, go back to study
-    if (fsm->getBreakTime() >= fsm->getBreakLength()) {
-        fsm->startStudyTimer();
-        fsm->resetMotionTimer();
+    if (isBreakTimerFinished()) {
+        stopBreakTimer();
+        startStudyTimer();
+        startInactivityTimer();
         fsm->setState(StudyState::getInstance());
         return;
     }
 }
 
-void BreakState::exit(FSM *fsm)
-{
-    Hardware* hw = fsm->getHardware();
+// void BreakState::exit(FSM *fsm)
+// {
+//     // Hardware* hw = fsm->getHardware();
 
-    hw->logMessage("exiting break state");
-    hw->turnLightsOff();
-}
+//     Serial.println("exiting break state");
+//     hw->turnLightsOff();
+// }
 
 const char *BreakState::getName()
 {

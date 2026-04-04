@@ -11,6 +11,9 @@
 // - Calculate inactivity duration
 // - Provide motion information to system logic
 // create a flag to track if motion is detected, and use it to control the LED and buzzer in fsm.cpp later on when we integrate the modules together
-extern bool motionDetected;
+// extern bool motionDetected;
+
+void motionSetup();
+bool motionIsDetected();
 
 #endif

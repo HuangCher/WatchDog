@@ -14,4 +14,6 @@ bool paused = false;
 void init_servo();
 void servo_idle();
 void servo_progress(float progress);
+void servo_warning();
+void servo_break();
 void restore_position();
