@@ -13,7 +13,7 @@
 #define BUTTON_PIN 4
 
 #define STUDY_TIME_MS 30000    // 30 seconds
-#define BREAK_TIME_MS 150000     // 15 seconds
-#define INACTIVITY_TIME_MS 10000 // 10 seconds
+#define BREAK_TIME_MS 15000     // 15 seconds
+#define INACTIVITY_TIME_MS 5000 // 10 seconds
 
 #endif // PINS_H

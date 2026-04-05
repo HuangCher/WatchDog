@@ -227,8 +227,7 @@ void StudyState::enter(FSM *fsm)
 
     Serial.println("entering study state");
     studyMode();
-    studyMode(); // study alert (buzzer + lights)
-    // hw->servoStudy(); SERVO GOES HERE
+    servo_study();
 
     // reset inactivity timer when entering study
     // fsm->resetMotionTimer();
@@ -311,9 +310,7 @@ void WarningState::update(FSM *fsm)
     }
 }
 
-void WarningState::exit(FSM *fsm) {
-    noTone(BUZZER_PIN); // ← ADD THIS
-}
+void WarningState::exit(FSM *fsm) {}
 
 // GETTER
 const char *WarningState::getName()
@@ -339,6 +336,7 @@ void BreakState::enter(FSM *fsm)
     
     startBreakTimer();
     stopInactivityTimer();
+    stopStudyTimer();
 }
 
 void BreakState::update(FSM *fsm)
@@ -348,6 +346,9 @@ void BreakState::update(FSM *fsm)
         fsm->setState(IdleState::getInstance());
         return;
     }
+
+    float progress = getTimerProgress(BREAK_TIME_MS);
+    servo_progress(progress);
 
     // after break time is over, go back to study
     if (isBreakTimerFinished()) {

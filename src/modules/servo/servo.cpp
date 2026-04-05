@@ -17,7 +17,7 @@
 //Initialization
 Servo myservo;
 int angle = 0;
-bool paused = false; 
+bool paused = false;
 
 void init_servo(){
     myservo.attach(SERVO_PIN);
@@ -40,7 +40,8 @@ void servo_progress(float progress){
     if(progress < 0) progress = 0;
     if(progress > 1) progress = 1;
 
-    float current_angle = progress * 180.0;
+    Serial.println("Servo Progress: " + String(progress));
+    float current_angle = 180 * progress;
     myservo.write((int)current_angle);
     angle = (int)current_angle;
 }
@@ -48,19 +49,15 @@ void servo_progress(float progress){
 void servo_study() {
     paused = false;  // allow progress updates
     myservo.write(0); // reset to start
-    angle = 0;
 }
 
 void servo_warning() {
-    angle = 180;
-    myservo.write(angle);
     paused = true;
 }
 
 void servo_break() {
-    angle = 90;
-    myservo.write(angle);
     paused = false;
+    myservo.write(0);
 }
 
 void restore_position(){ //Return servo motor to original angle
