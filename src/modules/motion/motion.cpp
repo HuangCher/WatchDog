@@ -1,3 +1,5 @@
+#include <Arduino.h> 
+#include "pins.h" 
 #include "motion.h"
 // Motion Detection Module
 // Owner: Johanna

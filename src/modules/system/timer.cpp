@@ -1,11 +1,9 @@
 #include "timer.h"
-//#include <pins.h>??
+#include <pins.h>
 
- 
 //Include the calculations as last time? or is it in fsm?
 
 //TIMER VARIABLES
-
 // Study Timer (25 minutes focus time)
 unsigned long studyStartTime = 0;      // Timestamp when study timer started
 unsigned long studyPausedTime = 0;     // Stores elapsed time when timer was paused
@@ -133,19 +131,19 @@ void stopInactivityTimer() {
 // Returns true when the 25-minute study time is complete
 bool isStudyTimerFinished() {
   if (!studyTimerRunning || studyTimerPaused) return false;
-  return (millis() - studyStartTime >= 25UL * 60 * 1000);
+  return (millis() - studyStartTime >= STUDY_TIME_MS);
 }
 
 // Returns true when the 5-minute break time is complete
 bool isBreakTimerFinished() {
   if (!breakTimerRunning || breakTimerPaused) return false;
-  return (millis() - breakStartTime >= 5UL * 60 * 1000);
+  return (millis() - breakStartTime >= BREAK_TIME_MS);
 }
 
 // Returns true when inactivity timeout has been reached
 bool isInactivityTimerFinished() {
   if (!inactivityTimerRunning || inactivityTimerPaused) return false;
-  return (millis() - inactivityStartTime >= 5UL * 60 * 1000);
+  return (millis() - inactivityStartTime >= INACTIVITY_TIME_MS);
 }
 
 // PROGRESS FUNCTION

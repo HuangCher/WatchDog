@@ -3,8 +3,6 @@
 
 #include <Arduino.h>
 
-#define BUTTON_PIN 2
-
 void buttonSetup();
 bool buttonWasPressed();
 bool isSystemOn();

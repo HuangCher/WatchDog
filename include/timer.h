@@ -13,6 +13,7 @@
 
 
 // Timer variables
+
 extern unsigned long studyStartTime;
 extern unsigned long studyPausedTime;
 extern bool studyTimerRunning;

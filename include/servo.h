@@ -5,11 +5,10 @@
 #include "pins.h" //VSCODE only
 #include <Arduino.h>
 #include "timer.h"
-#define SERVO_PIN 16
 
 using namespace std;
 
-bool paused = false; 
+extern bool paused; 
 
 void init_servo();
 void servo_idle();

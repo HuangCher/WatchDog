@@ -1,6 +1,4 @@
 // veronica
-#pragma once
-#include <Servo.h>
 #include "pins.h"
 #include <Arduino.h>
 #include <ESP32Servo.h>
@@ -19,10 +17,7 @@
 //Initialization
 Servo myservo;
 int angle = 0;
-bool paused = false;
-int STUDY_TIME = 10000;
-enum State {IDLE, STUDY, WARNING, BREAK};
-State current_state = IDLE;
+bool paused = false; 
 
 void init_servo(){
     myservo.attach(SERVO_PIN);
@@ -48,6 +43,12 @@ void servo_progress(float progress){
     float current_angle = progress * 180.0;
     myservo.write((int)current_angle);
     angle = (int)current_angle;
+}
+
+void servo_study() {
+    paused = false;  // allow progress updates
+    myservo.write(0); // reset to start
+    angle = 0;
 }
 
 void servo_warning() {
