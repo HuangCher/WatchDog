@@ -15,5 +15,6 @@
 
 void motionSetup();
 bool motionIsDetected();
+bool motionIsActive();
 
 #endif

@@ -14,6 +14,6 @@
 
 #define STUDY_TIME_MS 30000    // 30 seconds
 #define BREAK_TIME_MS 15000     // 15 seconds
-#define INACTIVITY_TIME_MS 5000 // 10 seconds
+#define INACTIVITY_TIME_MS 2000 // 2 seconds + 3 sec default delay
 
 #endif // PINS_H

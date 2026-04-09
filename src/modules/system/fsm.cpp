@@ -242,7 +242,7 @@ void StudyState::update(FSM *fsm)
     }
 
     // if motion is detected, reset inactivity timer bc user is active
-    if (motionIsDetected()) {
+    if (motionIsActive()) {
         startInactivityTimer();
     }
 
@@ -302,7 +302,7 @@ void WarningState::update(FSM *fsm)
     }
 
     // motion means user came back, so go back to study
-    if (motionIsDetected()) {
+    if (motionIsActive()) {
         resumeStudyTimer();
         startInactivityTimer();
         fsm->setState(StudyState::getInstance());
