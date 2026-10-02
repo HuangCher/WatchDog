@@ -116,7 +116,6 @@ Study-Companion-Robot/
 │       └── events.cpp
 │
 ├── dashboard/
-│   ├── README.md
 │   ├── requirements.txt
 │   ├── app.py
 │   │
@@ -148,7 +147,7 @@ Study-Companion-Robot/
     │   └── timing_results.md
     │
     └── logs/
-        └── README.md
+        └── logs.md
 ```
 
 ## Project Goals
